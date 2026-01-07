@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReachGold-AI: Investor Pitch Deck (VivLeoN)</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+KR:wght@300;400;700&family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-gold: #F1C40F;
+            --dark-bg: #0a0e17;
+            --card-bg: #151b2b;
+            --text-main: #e2e8f0;
+            --text-sub: #94a3b8;
+            --accent-blue: #3b82f6;
+            --danger-red: #ef4444;
+            --success-green: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', 'Noto Sans KR', 'Sarabun', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* --- Controls --- */
+        .controls {
+            position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; gap: 8px;
+        }
+        .control-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .control-btn.active {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            font-weight: 700;
+        }
+
+        /* --- Slide Layout --- */
+        #deck-container {
+            width: 100vw; height: 100vh; position: relative; perspective: 1000px;
+        }
+        .slide {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; transform: translateZ(-100px); pointer-events: none;
+            transition: all 0.6s ease-in-out;
+            padding: 20px 60px;
+            overflow-y: auto;
+        }
+        .slide.active {
+            opacity: 1; transform: translateZ(0); pointer-events: all; z-index: 10;
+        }
+
+        /* --- Typography --- */
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #fff 30%, var(--primary-gold) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 15px; text-align: center; line-height: 1.1;
+        }
+        h2 {
+            font-size: 1.8rem;
+            color: var(--primary-gold); margin-bottom: 25px;
+            text-transform: uppercase; letter-spacing: 1.5px; text-align: center;
+        }
+        h3 { font-size: 1.2rem; color: var(--text-main); margin-bottom: 10px; }
+        p {
+            font-size: 0.95rem; color: var(--text-sub); max-width: 900px;
+            text-align: center; line-height: 1.5; margin-bottom: 15px;
+        }
+        .highlight { color: var(--primary-gold); font-weight: bold; }
+
+        /* --- Components --- */
+        .grid-container {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
+            width: 90%; max-width: 1100px; margin-top: 20px;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            padding: 20px; border-radius: 12px;
+            text-align: center; transition: transform 0.3s;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .card:hover {
+            transform: translateY(-5px); border-color: var(--primary-gold);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .card i { font-size: 2rem; color: var(--primary-gold); margin-bottom: 15px; }
+        .card h4 { font-size: 1rem; margin-bottom: 8px; color: var(--text-main); font-weight: 600; }
+        .card p { font-size: 0.85rem; text-align: center; margin: 0; }
+
+        /* --- UX Mobile Frames --- */
+        .ux-container {
+            display: flex; justify-content: center; gap: 30px; margin-top: 20px;
+        }
+        .phone-frame {
+            width: 200px; height: 400px; border: 8px solid #333; border-radius: 20px;
+            background: #000; position: relative; overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        .app-screen {
+            width: 100%; height: 100%; background: linear-gradient(180deg, #1a202c, #2d3748);
+            padding: 15px; display: flex; flex-direction: column; align-items: center;
+        }
+        .step-label { margin-top: 15px; font-size: 0.9rem; color: var(--text-main); }
+
+        /* --- Comparison Table --- */
+        .comparison-table {
+            width: 90%; max-width: 900px; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; color: var(--text-sub);
+        }
+        .comparison-table th { color: var(--text-main); font-weight: 600; }
+        .comparison-table .brand-col {
+            color: var(--primary-gold); font-weight: bold; border-bottom: 2px solid var(--primary-gold); font-size: 1rem;
+        }
+        .check { color: var(--success-green); }
+        .times { color: var(--danger-red); }
+
+        /* --- Roadmap --- */
+        .roadmap-container {
+            display: flex; justify-content: space-between; width: 90%; max-width: 1000px;
+            margin-top: 30px; position: relative;
+        }
+        .roadmap-container::before {
+            content: ''; position: absolute; top: 18px; left: 0; width: 100%; height: 2px;
+            background: rgba(212, 175, 55, 0.3); z-index: 0;
+        }
+        .roadmap-item {
+            position: relative; z-index: 1; text-align: center; width: 23%;
+        }
+        .roadmap-dot {
+            width: 36px; height: 36px; background: var(--card-bg); border: 2px solid var(--primary-gold);
+            border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;
+            color: var(--primary-gold); font-weight: bold; font-size: 0.8rem;
+        }
+        .roadmap-content {
+            background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05); text-align: left;
+        }
+        .roadmap-content h5 { color: var(--accent-blue); margin-bottom: 5px; font-size: 0.9rem; }
+        .roadmap-content ul { padding-left: 15px; text-align: left; margin: 0; }
+        .roadmap-content li { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 3px; }
+
+        /* --- Charts --- */
+        .chart-wrapper {
+            position: relative; width: 100%; max-width: 700px; height: 300px; margin: 10px auto;
+        }
+
+        /* --- Nav --- */
+        .nav-arrow {
+            position: fixed; top: 50%; transform: translateY(-50%); font-size: 2rem;
+            color: rgba(255,255,255,0.2); cursor: pointer; z-index: 100; padding: 20px;
+        }
+        .nav-arrow:hover { color: var(--primary-gold); }
+        .prev-arrow { left: 10px; }
+        .next-arrow { right: 10px; }
+        .progress-bar {
+            position: fixed; bottom: 0; left: 0; height: 4px; background: var(--primary-gold); width: 0%; transition: width 0.5s;
+        }
+
+        /* --- Mobile --- */
+        @media (max-width: 768px) {
+            body { overflow-y: auto; overflow-x: hidden; }
+            #deck-container { height: auto; display: block; }
+            .slide {
+                position: relative; width: 100%; height: auto; min-height: 100vh;
+                opacity: 1; transform: none; padding: 60px 20px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .nav-arrow, .progress-bar { display: none; }
+            .grid-container { grid-template-columns: 1fr; width: 100%; }
+            .ux-container { flex-direction: column; align-items: center; }
+            .roadmap-container { flex-direction: column; width: 100%; }
+            .roadmap-container::before { width: 2px; height: 100%; left: 18px; top: 0; }
+            .roadmap-item { width: 100%; display: flex; text-align: left; margin-bottom: 20px; }
+            .roadmap-dot { margin: 0 15px 0 0; flex-shrink: 0; }
+            .chart-wrapper { height: 250px; }
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.5rem; }
+            .comparison-table { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button class="control-btn active" onclick="setLang('en')">EN</button>
+        <button class="control-btn" onclick="setLang('th')">TH</button>
+        <button class="control-btn" onclick="setLang('kr')">KR</button>
+    </div>
+
+    <div class="nav-arrow prev-arrow" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></div>
+    <div class="nav-arrow next-arrow" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></div>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div id="deck-container">
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <i class="fas fa-layer-group" style="font-size: 4rem; color: var(--primary-gold); margin-bottom: 20px;"></i>
+            <h1 data-key="title_main">ReachGold-AI</h1>
+            <h3 data-key="title_sub" style="color: var(--text-sub);">Capital-Protected Gold Investment Platform</h3>
+            <p data-key="tagline" style="margin-top: 15px; color: var(--accent-blue); font-weight: 600;">
+                Safety First. Accessible to All.
+            </p>
+            <div style="margin-top: 30px; font-size: 0.9rem; color: var(--text-sub);">
+                <i class="fas fa-map-marker-alt"></i> Based in Thailand &nbsp;|&nbsp; 
+                <i class="fas fa-rocket"></i> Seeking Seed/Pre-A
+            </div>
+        </div>
+
+        <!-- Slide 2: Executive Summary -->
+        <div class="slide">
+            <h2 data-key="exec_title">Executive Summary</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <i class="fas fa-bullseye"></i>
+                    <h4 data-key="exec_1_title">Vision</h4>
+                    <p data-key="exec_1_desc">SEA's No.1 Digital Asset Platform. Starting with Safe Gold.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4 data-key="exec_2_title">Problem</h4>
+                    <p data-key="exec_2_desc">High Barrier & Volatility Risk prevents mass adoption.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-magic"></i>
+                    <h4 data-key="exec_3_title">Solution</h4>
+                    <p data-key="exec_3_desc">AI Novice Mode + Loss-Stop Insurance + GoldBits Rewards.</p>
+                </div>
+                <div class="card" style="border-color: var(--success-green);">
+                    <i class="fas fa-hand-holding-dollar" style="color: var(--success-green);"></i>
+                    <h4 data-key="exec_4_title">Ask</h4>
+                    <p data-key="exec_4_desc">$1.5M for 18mo Runway (Prod Dev, UA, Ops).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Problem -->
+        <div class="slide">
+            <h2 data-key="prob_title">The Problem</h2>
+            <div class="grid-container">
+                <div class="card" style="border-left: 4px solid var(--danger-red);">
+                    <i class="fas fa-chart-line-down" style="color: var(--danger-red);"></i>
+                    <h4 data-key="prob_1_title">Fear of Loss</h4>
+                    <p data-key="prob_1_desc">Volatility is the #1 barrier for retail investors.</p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--danger-red);">
+                    <i class="fas fa-door-closed" style="color: var(--danger-red);"></i>
+                    <h4 data-key="prob_2_title">High Barrier</h4>
+                    <p data-key="prob_2_desc">Traditional shops require high minimum buy (~5,000 THB).</p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--danger-red);">
+                    <i class="fas fa-ghost" style="color: var(--danger-red);"></i>
+                    <h4 data-key="prob_3_title">Low Engagement</h4>
+                    <p data-key="prob_3_desc">Existing apps lack retention features beyond trading.</p>
+                </div>
+            </div>
+            <p style="margin-top: 25px; font-style: italic;">
+                "70% of SEA middle-class want inflation hedge, but only 15% invest in gold."
+            </p>
+        </div>
+
+        <!-- Slide 4: Solution -->
+        <div class="slide">
+            <h2 data-key="sol_title">Our Solution</h2>
+            <div class="grid-container">
+                <div class="card" style="border-top: 4px solid var(--accent-blue);">
+                    <h4 data-key="sol_1_title">SafeStart</h4>
+                    <p data-key="sol_1_desc">One-click AI risk profiling. Auto-invest from <span class="currency-val" data-base="50">50</span>.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--success-green);">
+                    <h4 data-key="sol_2_title">RG-CP Insurance</h4>
+                    <p data-key="sol_2_desc">Embedded protection. Refunds up to 100% of loss if price drops in 7 days.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--primary-gold);">
+                    <h4 data-key="sol_3_title">GoldBits™</h4>
+                    <p data-key="sol_3_desc">Gamified rewards. Walk & Login to earn points for fee discounts.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: UX/Demo (Restored & Expanded) -->
+        <div class="slide">
+            <h2 data-key="ux_title">User Experience</h2>
+            <div class="ux-container">
+                <div style="text-align: center;">
+                    <div class="phone-frame">
+                        <div class="app-screen">
+                            <i class="fas fa-robot" style="font-size: 3rem; color: var(--accent-blue); margin-top: 50px;"></i>
+                            <p style="color:white; margin-top:20px;">AI Analysis...</p>
+                            <div style="margin-top: auto; width: 80%; height: 10px; background: #444; border-radius: 5px;">
+                                <div style="width: 70%; height: 100%; background: var(--accent-blue); border-radius: 5px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="step-label">1. Risk Profile</p>
+                </div>
+                <div style="text-align: center;">
+                    <div class="phone-frame">
+                        <div class="app-screen">
+                            <div style="width: 80px; height: 80px; border: 3px solid var(--primary-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 40px; color: var(--primary-gold); font-weight: bold;">Buy</div>
+                            <h4 style="color:white; margin-top: 20px;"><span class="currency-val" data-base="100">100</span></h4>
+                            <p style="color: var(--success-green); font-size: 0.8rem;">+ Insured Active</p>
+                        </div>
+                    </div>
+                    <p class="step-label">2. Insured Buy</p>
+                </div>
+                <div style="text-align: center;">
+                    <div class="phone-frame">
+                        <div class="app-screen">
+                            <i class="fas fa-shoe-prints" style="font-size: 3rem; color: var(--primary-gold); margin-top: 50px;"></i>
+                            <h4 style="color:white; margin-top: 20px;">5,000 Steps</h4>
+                            <p style="color: var(--primary-gold);">+50 GoldBits</p>
+                        </div>
+                    </div>
+                    <p class="step-label">3. Earn Rewards</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Market Analysis -->
+        <div class="slide">
+            <h2 data-key="mkt_title">Market Opportunity</h2>
+            <div class="chart-wrapper">
+                <canvas id="marketChart"></canvas>
+            </div>
+            <div style="display: flex; gap: 30px; margin-top: 10px;">
+                <div style="text-align: center;">
+                    <h3 style="color: var(--primary-gold); margin:0;">$15B</h3>
+                    <p style="font-size: 0.8rem;">SAM: Thai Online Gold</p>
+                </div>
+                <div style="text-align: center;">
+                    <h3 style="color: var(--success-green); margin:0;">$500M</h3>
+                    <p style="font-size: 0.8rem;">SOM: Retail Micro-investors</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Business Model -->
+        <div class="slide">
+            <h2 data-key="biz_title">Business Model</h2>
+            <div class="grid-container" style="grid-template-columns: 1fr 1fr;">
+                <div class="card" style="align-items: flex-start; text-align: left;">
+                    <h4 data-key="biz_rev_title">Revenue Streams</h4>
+                    <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--text-sub); line-height: 1.6;">
+                        <li data-key="biz_rev_1">Trading Fees: 0.5% - 1.0% spread</li>
+                        <li data-key="biz_rev_2">Insurance Premiums: 1% - 3%</li>
+                        <li data-key="biz_rev_3">Subscription: Prime Tier</li>
+                        <li data-key="biz_rev_4">Float Income: Interest on deposits</li>
+                    </ul>
+                </div>
+                <div class="card" style="align-items: flex-start; text-align: left;">
+                    <h4 data-key="biz_price_title">Pricing Strategy</h4>
+                    <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--text-sub); line-height: 1.6;">
+                        <li data-key="biz_price_1">Free Tier: Ad-supported</li>
+                        <li data-key="biz_price_2">Prime Tier: <span class="currency-val" data-base="149">149</span>/mo (50% off fees)</li>
+                        <li data-key="biz_price_3">Referral: <span class="currency-val" data-base="50">50</span> GoldBits for both</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Competitive Advantage (New) -->
+        <div class="slide">
+            <h2 data-key="comp_title">Competitive Advantage</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th data-key="comp_th_feature">Feature</th>
+                        <th class="brand-col">ReachGold</th>
+                        <th data-key="comp_th_trad">Traditional Shops</th>
+                        <th data-key="comp_th_app">Trading Apps</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-key="comp_row_1">Micro-Investment</td>
+                        <td><i class="fas fa-check check"></i> <span class="currency-val" data-base="50">50</span></td>
+                        <td><i class="fas fa-times times"></i> High Cap</td>
+                        <td><i class="fas fa-check check"></i> Med Cap</td>
+                    </tr>
+                    <tr>
+                        <td data-key="comp_row_2">Loss Insurance</td>
+                        <td><i class="fas fa-check check"></i> RG-CP</td>
+                        <td><i class="fas fa-times times"></i> None</td>
+                        <td><i class="fas fa-times times"></i> None</td>
+                    </tr>
+                    <tr>
+                        <td data-key="comp_row_3">Gamification</td>
+                        <td><i class="fas fa-check check"></i> GoldBits™</td>
+                        <td><i class="fas fa-times times"></i> None</td>
+                        <td><i class="fas fa-times times"></i> None</td>
+                    </tr>
+                    <tr>
+                        <td data-key="comp_row_4">AI Risk Profile</td>
+                        <td><i class="fas fa-check check"></i> Yes</td>
+                        <td><i class="fas fa-times times"></i> No</td>
+                        <td><i class="fas fa-minus" style="color:#666"></i> Basic</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Slide 9: Go-to-Market (New) -->
+        <div class="slide">
+            <h2 data-key="gtm_title">Go-to-Market Strategy</h2>
+            <div class="grid-container">
+                <div class="card" style="background: linear-gradient(180deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.1) 100%);">
+                    <i class="fas fa-bullhorn" style="color: var(--accent-blue);"></i>
+                    <h4 data-key="gtm_1_title">Awareness</h4>
+                    <p data-key="gtm_1_desc">Viral TikTok Challenges ("Coffee to Gold"). Financial Influencers.</p>
+                </div>
+                <div class="card" style="background: linear-gradient(180deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.1) 100%);">
+                    <i class="fas fa-user-plus" style="color: var(--success-green);"></i>
+                    <h4 data-key="gtm_2_title">Acquisition</h4>
+                    <p data-key="gtm_2_desc">Referral Program: Give <span class="currency-val" data-base="50">50</span>, Get <span class="currency-val" data-base="50">50</span>. B2B Corporate Gifts.</p>
+                </div>
+                <div class="card" style="background: linear-gradient(180deg, var(--card-bg) 0%, rgba(212, 175, 55, 0.1) 100%);">
+                    <i class="fas fa-infinity" style="color: var(--primary-gold);"></i>
+                    <h4 data-key="gtm_3_title">Retention</h4>
+                    <p data-key="gtm_3_desc">GoldBits™ Streak Rewards. Prime Subscription for zero fees.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Roadmap -->
+        <div class="slide">
+            <h2 data-key="road_title">Roadmap</h2>
+            <div class="roadmap-container">
+                <div class="roadmap-item">
+                    <div class="roadmap-dot">Q1</div>
+                    <div class="roadmap-content">
+                        <h5 data-key="road_1_h">Seed ($500K)</h5>
+                        <ul>
+                            <li data-key="road_1_1">MVP Launch</li>
+                            <li data-key="road_1_2">AI Novice Mode</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-dot">Q2</div>
+                    <div class="roadmap-content">
+                        <h5 data-key="road_2_h">Pre-A ($1.5M)</h5>
+                        <ul>
+                            <li data-key="road_2_1">GoldBits Econ</li>
+                            <li data-key="road_2_2">UA: 50k Users</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-dot">Q4</div>
+                    <div class="roadmap-content">
+                        <h5 data-key="road_3_h">Series A Prep</h5>
+                        <ul>
+                            <li data-key="road_3_1">100k MAU</li>
+                            <li data-key="road_3_2">B2B API Sales</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-dot">2026</div>
+                    <div class="roadmap-content">
+                        <h5 data-key="road_4_h">Expansion</h5>
+                        <ul>
+                            <li data-key="road_4_1">Regional Launch</li>
+                            <li data-key="road_4_2">DeFi Integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Financial Plan -->
+        <div class="slide">
+            <h2 data-key="fin_title">Financial Projections</h2>
+            <div style="display: flex; width: 100%; max-width: 900px; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                <div class="card" style="flex: 1; min-width: 300px; padding: 15px;">
+                    <h4 data-key="fin_chart_1">Revenue Growth ($M)</h4>
+                    <div style="height: 200px; width: 100%;">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                </div>
+                <div class="card" style="flex: 1; min-width: 300px; padding: 15px;">
+                    <h4 data-key="fin_chart_2">Use of Funds ($1.5M)</h4>
+                    <div style="height: 200px; width: 100%; display: flex; justify-content: center;">
+                        <canvas id="allocationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top: 20px;">
+                <span class="highlight">BEP:</span> Month 18 &nbsp;|&nbsp; 
+                <span class="highlight">ROI:</span> 5x (Series B)
+            </p>
+        </div>
+
+        <!-- Slide 12: Team (Updated) -->
+        <div class="slide">
+            <h2 data-key="team_title">Team VivLeoN</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <div style="width: 60px; height: 60px; border: 2px solid var(--primary-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-gold); font-weight: bold; margin-bottom: 10px;">CEO</div>
+                    <h4>Project Lead</h4>
+                    <p data-key="team_1_desc">Visionary behind ReachGold. Financial Structuring.</p>
+                </div>
+                <div class="card">
+                    <div style="width: 60px; height: 60px; border: 2px solid var(--accent-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent-blue); font-weight: bold; margin-bottom: 10px;">CTO</div>
+                    <h4>Tech Lead</h4>
+                    <p data-key="team_2_desc">Microservices & AI Engine Architecture.</p>
+                </div>
+                <div class="card">
+                    <div style="width: 60px; height: 60px; border: 2px solid var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--success-green); font-weight: bold; margin-bottom: 10px;">CPO</div>
+                    <h4>Growth Lead</h4>
+                    <p data-key="team_3_desc">User Acquisition Strategy & Gamification.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Contact (New) -->
+        <div class="slide">
+            <h2 data-key="contact_title">Join the Revolution</h2>
+            <p data-key="contact_sub">We are looking for strategic partners to democratize wealth in Asia.</p>
+            <div style="margin-top: 40px; text-align: center;">
+                <div style="padding: 20px; border: 1px solid var(--primary-gold); border-radius: 10px; display: inline-block;">
+                    <h3 style="color: var(--primary-gold);">VivLeoN Team</h3>
+                    <p>contact@reachgold.ai</p>
+                    <p>+66 81 234 5678</p>
+                </div>
+            </div>
+            <p style="margin-top: 50px; font-size: 0.8rem;">&copy; 2026 ReachGold AI (VivLeoN Project).</p>
+        </div>
+
+    </div>
+
+    <script>
+        /* --- Text Data --- */
+        const contentData = {
+            en: {
+                title_main: "ReachGold-AI",
+                title_sub: "Capital-Protected Gold Investment Platform",
+                tagline: "Safety First. Accessible to All.",
+                exec_title: "Executive Summary",
+                exec_1_title: "Vision", exec_1_desc: "SEA's No.1 Digital Asset Platform.",
+                exec_2_title: "Problem", exec_2_desc: "High Barrier & Volatility Risk.",
+                exec_3_title: "Solution", exec_3_desc: "AI SafeStart + Insurance + GoldBits.",
+                exec_4_title: "Ask", exec_4_desc: "$1.5M for 18mo Runway.",
+                prob_title: "The Problem",
+                prob_1_title: "Fear of Loss", prob_1_desc: "Volatility is the #1 barrier.",
+                prob_2_title: "High Barrier", prob_2_desc: "High min buy (~5,000 THB).",
+                prob_3_title: "Low Engagement", prob_3_desc: "No retention features.",
+                sol_title: "Our Solution",
+                sol_1_title: "SafeStart", sol_1_desc: "Auto-invest from <span class='currency-val' data-base='50'>50</span>.",
+                sol_2_title: "RG-CP Insurance", sol_2_desc: "Refunds up to 100% of loss.",
+                sol_3_title: "GoldBits™", sol_3_desc: "Gamified rewards for fee discounts.",
+                ux_title: "User Experience",
+                mkt_title: "Market Opportunity",
+                biz_title: "Business Model",
+                biz_rev_title: "Revenue Streams",
+                biz_rev_1: "Trading Fees: 0.5% - 1.0%",
+                biz_rev_2: "Insurance Premiums: 1% - 3%",
+                biz_rev_3: "Subscription: Prime Tier",
+                biz_rev_4: "Float Income: Interest",
+                biz_price_title: "Pricing",
+                biz_price_1: "Free Tier: Ad-supported",
+                biz_price_2: "Prime: <span class='currency-val' data-base='149'>149</span>/mo",
+                biz_price_3: "Referral: <span class='currency-val' data-base='50'>50</span> GoldBits",
+                comp_title: "Competitive Advantage",
+                comp_th_feature: "Feature", comp_th_trad: "Traditional", comp_th_app: "Trading Apps",
+                comp_row_1: "Micro-Invest", comp_row_2: "Loss Insurance", comp_row_3: "Gamification", comp_row_4: "AI Risk Profile",
+                gtm_title: "Go-to-Market Strategy",
+                gtm_1_title: "Awareness", gtm_1_desc: "Viral TikTok, Influencers.",
+                gtm_2_title: "Acquisition", gtm_2_desc: "Referral Program, B2B Gifts.",
+                gtm_3_title: "Retention", gtm_3_desc: "Streak Rewards, Prime Sub.",
+                road_title: "Roadmap",
+                road_1_h: "Seed ($500K)", road_1_1: "MVP Launch", road_1_2: "AI Novice Mode",
+                road_2_h: "Pre-A ($1.5M)", road_2_1: "GoldBits Econ", road_2_2: "UA: 50k Users",
+                road_3_h: "Series A Prep", road_3_1: "100k MAU", road_3_2: "B2B API Sales",
+                road_4_h: "Expansion", road_4_1: "Regional Launch", road_4_2: "DeFi Integration",
+                fin_title: "Financial Projections",
+                fin_chart_1: "Revenue Growth ($M)", fin_chart_2: "Use of Funds ($1.5M)",
+                team_title: "Team VivLeoN",
+                team_1_desc: "Visionary & Structuring.", team_2_desc: "Microservices & AI.", team_3_desc: "Growth & Strategy.",
+                contact_title: "Join the Revolution",
+                contact_sub: "Partner with us to democratize wealth."
+            },
+            th: {
+                title_main: "ReachGold-AI",
+                title_sub: "แพลตฟอร์มลงทุนทองคำคุ้มครองเงินต้น",
+                tagline: "ปลอดภัยเป็นที่หนึ่ง เข้าถึงได้ทุกคน",
+                exec_title: "บทสรุปผู้บริหาร",
+                exec_1_title: "วิสัยทัศน์", exec_1_desc: "แพลตฟอร์มสินทรัพย์ดิจิทัลอันดับ 1 ในอาเซียน",
+                exec_2_title: "ปัญหา", exec_2_desc: "อุปสรรคการเข้าถึงและความเสี่ยงสูง",
+                exec_3_title: "ทางออก", exec_3_desc: "AI SafeStart + ประกัน + GoldBits",
+                exec_4_title: "การลงทุน", exec_4_desc: "ระดมทุน $1.5M สำหรับ 18 เดือน",
+                prob_title: "ปัญหาที่พบ",
+                prob_1_title: "กลัวขาดทุน", prob_1_desc: "ความผันผวนคืออุปสรรคอันดับ 1",
+                prob_2_title: "เข้าถึงยาก", prob_2_desc: "ขั้นต่ำสูง (~5,000 บาท)",
+                prob_3_title: "ขาดแรงจูงใจ", prob_3_desc: "แอพทั่วไปไม่มีลูกเล่น",
+                sol_title: "ทางออกของเรา",
+                sol_1_title: "SafeStart", sol_1_desc: "ลงทุนอัตโนมัติเริ่ม <span class='currency-val' data-base='50'>50</span>",
+                sol_2_title: "ประกัน RG-CP", sol_2_desc: "คืนเงินสูงสุด 100% หากขาดทุน",
+                sol_3_title: "GoldBits™", sol_3_desc: "สะสมแต้มแลกส่วนลดค่าธรรมเนียม",
+                ux_title: "ประสบการณ์ผู้ใช้",
+                mkt_title: "โอกาสทางการตลาด",
+                biz_title: "โมเดลธุรกิจ",
+                biz_rev_title: "ช่องทางรายได้",
+                biz_rev_1: "ค่าธรรมเนียม: 0.5% - 1.0%",
+                biz_rev_2: "เบี้ยประกัน: 1% - 3%",
+                biz_rev_3: "ค่าสมาชิก: Prime Tier",
+                biz_rev_4: "ดอกเบี้ยจากเงินฝาก",
+                biz_price_title: "กลยุทธ์ราคา",
+                biz_price_1: "ฟรี: มีโฆษณา",
+                biz_price_2: "Prime: <span class='currency-val' data-base='149'>149</span>/เดือน",
+                biz_price_3: "แนะนำเพื่อน: <span class='currency-val' data-base='50'>50</span> GoldBits",
+                comp_title: "ความได้เปรียบ",
+                comp_th_feature: "ฟีเจอร์", comp_th_trad: "ร้านทองทั่วไป", comp_th_app: "แอพเทรด",
+                comp_row_1: "ลงทุนรายย่อย", comp_row_2: "ประกันขาดทุน", comp_row_3: "เกม/รางวัล", comp_row_4: "AI ประเมินเสี่ยง",
+                gtm_title: "กลยุทธ์เข้าสู่ตลาด",
+                gtm_1_title: "สร้างการรับรู้", gtm_1_desc: "TikTok Challenge, อินฟลูเอนเซอร์",
+                gtm_2_title: "หาลูกค้าใหม่", gtm_2_desc: "โปรแกรมแนะนำเพื่อน, ของขวัญองค์กร",
+                gtm_3_title: "รักษาฐานลูกค้า", gtm_3_desc: "รางวัลต่อเนื่อง, สมาชิก Prime",
+                road_title: "แผนงาน",
+                road_1_h: "Seed ($500K)", road_1_1: "เปิดตัว MVP", road_1_2: "โหมดมือใหม่ AI",
+                road_2_h: "Pre-A ($1.5M)", road_2_1: "ระบบเศรษฐกิจ GoldBits", road_2_2: "ผู้ใช้ 50k",
+                road_3_h: "เตรียม Series A", road_3_1: "ผู้ใช้ 100k", road_3_2: "ขาย API ธุรกิจ",
+                road_4_h: "ขยายตลาด", road_4_1: "เปิดตัวระดับภูมิภาค", road_4_2: "เชื่อมต่อ DeFi",
+                fin_title: "ประมาณการการเงิน",
+                fin_chart_1: "รายได้เติบโต ($M)", fin_chart_2: "การใช้เงินทุน ($1.5M)",
+                team_title: "ทีม VivLeoN",
+                team_1_desc: "ผู้วางวิสัยทัศน์ & โครงสร้างการเงิน", team_2_desc: "สถาปัตยกรรม Microservices & AI", team_3_desc: "กลยุทธ์การเติบโต & เกมมิฟิเคชั่น",
+                contact_title: "ร่วมปฏิวัติการลงทุน",
+                contact_sub: "ร่วมเป็นพันธมิตรเพื่อสร้างความมั่งคั่งที่เท่าเทียม"
+            },
+            kr: {
+                title_main: "ReachGold-AI",
+                title_sub: "원금 보호형 금 투자 플랫폼",
+                tagline: "가장 안전하고 쉬운 금테크의 시작",
+                exec_title: "사업 개요",
+                exec_1_title: "비전", exec_1_desc: "동남아 1위 디지털 자산 플랫폼.",
+                exec_2_title: "문제", exec_2_desc: "높은 진입 장벽과 변동성 리스크.",
+                exec_3_title: "솔루션", exec_3_desc: "AI 세이프스타트 + 보험 + GoldBits.",
+                exec_4_title: "투자", exec_4_desc: "18개월 런웨이 확보 ($1.5M).",
+                prob_title: "문제점",
+                prob_1_title: "손실 공포", prob_1_desc: "변동성이 가장 큰 진입 장벽.",
+                prob_2_title: "높은 장벽", prob_2_desc: "높은 최소 구매액 (~5,000 THB).",
+                prob_3_title: "낮은 참여도", prob_3_desc: "단순 거래 외 즐길거리 부재.",
+                sol_title: "솔루션",
+                sol_1_title: "SafeStart", sol_1_desc: "<span class='currency-val' data-base='50'>50</span>부터 자동 분산 투자.",
+                sol_2_title: "RG-CP 보험", sol_2_desc: "가격 하락 시 손실분 최대 100% 보상.",
+                sol_3_title: "GoldBits™", sol_3_desc: "수수료 할인을 위한 게이미피케이션.",
+                ux_title: "사용자 경험 (UX)",
+                mkt_title: "시장 기회",
+                biz_title: "비즈니스 모델",
+                biz_rev_title: "수익원",
+                biz_rev_1: "거래 수수료: 0.5% - 1.0%",
+                biz_rev_2: "보험료: 1% - 3%",
+                biz_rev_3: "구독료: 프라임 티어",
+                biz_rev_4: "운용 수익: 예치금 이자",
+                biz_price_title: "가격 정책",
+                biz_price_1: "무료: 광고 포함",
+                biz_price_2: "프라임: 월 <span class='currency-val' data-base='149'>149</span> (수수료 50% ↓)",
+                biz_price_3: "친구초대: <span class='currency-val' data-base='50'>50</span> GoldBits",
+                comp_title: "경쟁 우위",
+                comp_th_feature: "기능", comp_th_trad: "금은방", comp_th_app: "거래 앱",
+                comp_row_1: "소액 투자", comp_row_2: "손실 보험", comp_row_3: "게이미피케이션", comp_row_4: "AI 리스크 분석",
+                gtm_title: "시장 진입 전략 (GTM)",
+                gtm_1_title: "인지 (Awareness)", gtm_1_desc: "틱톡 챌린지, 금융 인플루언서.",
+                gtm_2_title: "획득 (Acquisition)", gtm_2_desc: "친구 초대 보상, 기업용 기프트.",
+                gtm_3_title: "유지 (Retention)", gtm_3_desc: "연속 출석 보상, 프라임 구독.",
+                road_title: "로드맵",
+                road_1_h: "Seed ($500K)", road_1_1: "MVP 출시", road_1_2: "AI 초심자 모드",
+                road_2_h: "Pre-A ($1.5M)", road_2_1: "GoldBits 경제", road_2_2: "유저 5만 달성",
+                road_3_h: "Series A 준비", road_3_1: "MAU 10만", road_3_2: "B2B API 세일즈",
+                road_4_h: "확장", road_4_1: "동남아 런칭", road_4_2: "DeFi 연동",
+                fin_title: "재무 계획",
+                fin_chart_1: "매출 성장 ($M)", fin_chart_2: "자금 사용 계획 ($1.5M)",
+                team_title: "Team VivLeoN",
+                team_1_desc: "총괄 & 금융 구조 설계", team_2_desc: "마이크로서비스 & AI 아키텍처", team_3_desc: "그로스 전략 & 게이미피케이션",
+                contact_title: "혁신에 동참하세요",
+                contact_sub: "아시아의 부를 민주화할 파트너를 찾습니다."
+            }
+        };
+
+        const exchangeRates = {
+            en: { code: "USD", rate: 0.029, symbol: "$" },
+            th: { code: "THB", rate: 1, symbol: "฿" },
+            kr: { code: "KRW", rate: 38, symbol: "₩" }
+        };
+
+        let currentLang = 'en';
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // --- Functions ---
+        function setLang(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.toLowerCase() === lang);
+            });
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if(contentData[lang][key]) {
+                    if(el.querySelector('.currency-val') || contentData[lang][key].includes('<span')) {
+                        el.innerHTML = contentData[lang][key]; 
+                    } else {
+                        el.innerText = contentData[lang][key];
+                    }
+                }
+            });
+            updateCurrencies();
+            updateCharts(); // Translate charts
+        }
+
+        function updateCurrencies() {
+            const info = exchangeRates[currentLang];
+            document.querySelectorAll('.currency-val').forEach(el => {
+                const base = parseFloat(el.getAttribute('data-base'));
+                const val = Math.round(base * info.rate);
+                el.innerText = `${info.symbol}${val.toLocaleString()}`;
+            });
+        }
+
+        function changeSlide(dir) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + dir + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('progressBar').style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+        }
+
+        // --- Charts ---
+        let marketChart, financialChart, allocationChart;
+
+        function initCharts() {
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = 'Inter';
+
+            // 1. Market Size
+            marketChart = new Chart(document.getElementById('marketChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['TAM: SEA Digital Asset', 'SAM: Thai Online Gold', 'SOM: Micro-investors'],
+                    datasets: [{
+                        data: [300, 15, 0.5],
+                        backgroundColor: ['#1e293b', '#D4AF37', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '60%' }
+            });
+
+            // 2. Financial Growth
+            financialChart = new Chart(document.getElementById('financialChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Year 1', 'Year 2', 'Year 3'],
+                    datasets: [{
+                        label: 'Revenue ($M)',
+                        data: [0.5, 3.0, 10.0],
+                        backgroundColor: '#D4AF37', borderRadius: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#333' } } } }
+            });
+
+            // 3. Allocation
+            allocationChart = new Chart(document.getElementById('allocationChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Prod Dev (40%)', 'Marketing (33%)', 'Ops (27%)'],
+                    datasets: [{
+                        data: [600, 500, 400],
+                        backgroundColor: ['#3b82f6', '#ef4444', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function updateCharts() {
+            if(!marketChart) return;
+            // Simple label translation update logic could go here if full chart translation is needed
+            // For now, charts use generic English labels which is standard for Pitch Decks
+        }
+
+        // --- Events ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        // Init
+        setLang('en');
+        setTimeout(initCharts, 500);
+
+    </script>
+</body>
+</html>
