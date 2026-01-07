@@ -55,6 +55,18 @@
             font-weight: 700;
         }
 
+        /* --- Confidential Watermark --- */
+        .confidential-mark {
+            position: fixed;
+            bottom: 10px;
+            right: 20px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 999;
+            pointer-events: none;
+            letter-spacing: 1px;
+        }
+
         /* --- Slide Layout --- */
         #deck-container {
             width: 100vw; height: 100vh; position: relative; perspective: 1000px;
@@ -201,6 +213,7 @@
             h1 { font-size: 2.2rem; }
             h2 { font-size: 1.5rem; }
             .comparison-table { font-size: 0.8rem; }
+            .confidential-mark { display: none; } /* Hide on mobile to save space */
         }
     </style>
 </head>
@@ -211,6 +224,9 @@
         <button class="control-btn" onclick="setLang('th')">TH</button>
         <button class="control-btn" onclick="setLang('kr')">KR</button>
     </div>
+
+    <!-- Confidential Mark for Professional Look -->
+    <div class="confidential-mark">CONFIDENTIAL & PROPRIETARY - VIVLEON PROJECT</div>
 
     <div class="nav-arrow prev-arrow" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></div>
     <div class="nav-arrow next-arrow" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></div>
@@ -342,7 +358,7 @@
             </div>
         </div>
 
-        <!-- Slide 6: Market Analysis (Updated) -->
+        <!-- Slide 6: Market Analysis -->
         <div class="slide">
             <h2 data-key="mkt_title">Market Opportunity</h2>
             <div class="chart-wrapper">
@@ -388,14 +404,14 @@
             </div>
         </div>
 
-        <!-- Slide 8: Expanded Monetization (New) -->
+        <!-- Slide 8: Expanded Monetization (Updated with 1g) -->
         <div class="slide">
             <h2 data-key="monet_title">Revenue Expansion</h2>
             <div class="grid-container" style="grid-template-columns: 1fr 1fr;">
                 <div class="card">
                     <i class="fas fa-coins" style="color: var(--primary-gold);"></i>
                     <h4 data-key="monet_1_title">Physical Redemption</h4>
-                    <p data-key="monet_1_desc">Holdings > 5g can be redeemed for physical gold bars. Generates minting & delivery fees.</p>
+                    <p data-key="monet_1_desc">Redeem holdings > 1g for certified gold bars. Generates minting & delivery fees.</p>
                 </div>
                 <div class="card">
                     <i class="fas fa-ad" style="color: var(--accent-blue);"></i>
@@ -568,7 +584,7 @@
                 <div style="padding: 20px; border: 1px solid var(--primary-gold); border-radius: 10px; display: inline-block;">
                     <h3 style="color: var(--primary-gold);">VivLeoN Team</h3>
                     <p>vivleon0510@gmail.com</p>
-                    <p>+1 608 XXX XXXX</p>
+                    <p>Telegram @vivleon</p>
                 </div>
             </div>
             <p style="margin-top: 50px; font-size: 0.8rem;">&copy; 2026 ReachGold AI (VivLeoN Project).</p>
@@ -611,7 +627,7 @@
                 biz_price_2: "Prime: <span class='currency-val' data-base='149'>149</span>/mo",
                 biz_price_3: "Referral: <span class='currency-val' data-base='50'>50</span> GoldBits",
                 monet_title: "Revenue Expansion",
-                monet_1_title: "Physical Redemption", monet_1_desc: "Redeem holdings > 5g for certified gold bars. Generates Minting & Delivery fees.",
+                monet_1_title: "Physical Redemption", monet_1_desc: "Redeem holdings > 1g for certified gold bars. Generates minting & delivery fees.",
                 monet_2_title: "Ad Revenue", monet_2_desc: "Free 'Miners' & non-investors generate revenue via targeted financial ads.",
                 comp_title: "Competitive Advantage",
                 comp_th_feature: "Feature", comp_th_trad: "Traditional", comp_th_app: "Trading Apps",
@@ -664,7 +680,7 @@
                 biz_price_2: "Prime: <span class='currency-val' data-base='149'>149</span>/เดือน",
                 biz_price_3: "แนะนำเพื่อน: <span class='currency-val' data-base='50'>50</span> GoldBits",
                 monet_title: "การขยายรายได้",
-                monet_1_title: "การแลกรับทองคำจริง", monet_1_desc: "ผู้ถือครอง > 5g แลกรับทองคำแท่งจริงได้ (ค่าธรรมเนียมกำเหน็จ/จัดส่ง)",
+                monet_1_title: "การแลกรับทองคำจริง", monet_1_desc: "ผู้ถือครอง > 1g แลกรับทองคำแท่งจริงได้ (ค่าธรรมเนียมกำเหน็จ/จัดส่ง)",
                 monet_2_title: "รายได้จากโฆษณา", monet_2_desc: "สร้างรายได้จากผู้ใช้งานฟรีผ่านโฆษณาทางการเงิน",
                 comp_title: "ความได้เปรียบ",
                 comp_th_feature: "ฟีเจอร์", comp_th_trad: "ร้านทองทั่วไป", comp_th_app: "แอพเทรด",
@@ -717,7 +733,7 @@
                 biz_price_2: "프라임: 월 <span class='currency-val' data-base='149'>149</span> (수수료 50% ↓)",
                 biz_price_3: "친구초대: <span class='currency-val' data-base='50'>50</span> GoldBits",
                 monet_title: "수익 모델 확장",
-                monet_1_title: "실물 금 인출", monet_1_desc: "5g 이상 보유 시 실물 골드바 인출 가능 (주조/배송 수수료)",
+                monet_1_title: "실물 금 인출", monet_1_desc: "1g 이상 보유 시 실물 골드바 인출 가능 (주조/배송 수수료)",
                 monet_2_title: "광고 수익", monet_2_desc: "무료 채굴 유저 트래픽을 활용한 금융 광고 수익",
                 comp_title: "경쟁 우위",
                 comp_th_feature: "기능", comp_th_trad: "금은방", comp_th_app: "거래 앱",
